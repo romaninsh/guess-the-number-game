@@ -1,15 +1,23 @@
 <?php
-
 require 'vendor/autoload.php';
 
-use \atk4\ui\Header;
 
-$n = $_GET['n'];
+$number = $_GET['number'];
 
-$app = new \atk4\ui\App(' I won, it was '.$n.' !');
+$app = new \atk4\ui\App('Computer Will Guess Your Number');
 $app->initLayout('Centered');
 
-$button = $app->layout->add(['Button', 'Play again.','iconRight'=>'refresh']);
-$button->set(['primary'=>true]);
-$button->set(['size big'=>true]);
-$button->link(['main','b'=>100,'m'=>0]);
+$app->add(['Header', 'Good game!! (gg)']);
+
+
+
+$button = $app->add(['Label', 'The number was: ', 'detail'=>$number, 'icon'=>'thumbs up', 'huge basic green']);
+
+$back = $app->add(['ui'=>'divider']);
+
+$text = $app->add(['Text']);
+$text->addParagraph('That wasn\'t that hard! I guessed it pretty quick, didn\'t I?');
+$text->addParagraph('How about another game?');
+
+$back = $app->add(['View', 'Play again'])
+    ->link(['index']);

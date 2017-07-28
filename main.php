@@ -2,56 +2,44 @@
 
 require 'vendor/autoload.php';
 
-use \atk4\ui\Header;
-
-$app = new \atk4\ui\App('Computer will guess the number');
+$app = new \atk4\ui\App('Computer Will Guess Your Number');
 $app->initLayout('Centered');
 
-/*if (!isset($_GET['r'])) {
-  $b = 100;
-  $m = 1;
-  $n =round(($b + $m) / 2)-1;
-  $app->add(new Header(['Your number is '.$n.' ?', 'size'=>1]));
-} else {
-    $n = $_GET['n'];
-    $m = $_GET['m'];
-    $b = $_GET['b'];
-          if ($_GET['r'] == 'w') {
-            $app->add(new Header(['Your number is '.$n.' !', 'size'=>1]));
-          } elseif ($_GET['r'] == 's') {
-            $b = $n;
-            $n = round (($b + $m) / 2);
-            $app->add(new Header(['Your number is '.$n.' ?', 'size'=>1]));
-          } elseif ($_GET['r'] == 'b') {
-            $m = $n;
-            $n = round (($b + $m) / 2);
-            $app->add(new Header(['Your number is '.$n.' ?', 'size'=>1]));
-          }
-      } */
+// Link will pass max and min number, which we will store in the variables
+$max = $_GET['max'];
+$min = $_GET['min'];
 
-    $b = $_GET['b'];
-    $m = $_GET['m'];
+// We guessed the number, but user pressed min/max anyway!
+if ($max - $min <= 1) {
+    $app->add(['Message', 'I think you are cheating!!', 'red']);
+    $back = $app->add(['ui'=>'divider']);
 
-    $n = round(($b+$m)/2);
+    $back = $app->add(['View', 'Back to the beginning'])
+        ->link(['index']);
+    exit;
+}
 
-    $app->add(new Header(['Your number is '.$n.' ?', 'size'=>1]));
+// Calculate number in the middle
+$middle = round( ($max + $min) / 2);
 
-    $button = $app->layout->add(['Button', "Yes, it's my number!",'iconRight'=>'empty star']);
-    $button->set(['primary'=>true]);
-    $button->set(['size big'=>true]);
-    $button->link(['win','n'=>$n]);
+// Display header
+$app->add(['Header', 'Tell me a little about your number']);
 
-    $button = $app->layout->add(['Button', 'No, my number is smaller.','iconRight'=>'arrow down']);
-    $button->set(['primary'=>true]);
-    $button->set(['size big'=>true]);
-    $button->link(['main','b'=>$n,'m'=>$m]);
+// This creates nice button bar with blue buttons inside
+$text = $app->add(['Text']);
+$text->addParagraph('I think that your number is between '.$min.' and '.$max.'. But how does it compare with '.$middle.'?');
 
-    $button = $app->layout->add(['Button', 'No, my number is bigger.','iconRight'=>'arrow up']);
-    $button->set(['primary'=>true]);
-    $button->set(['size big'=>true]);
-    $button->link(['main','b'=>$b,'m'=>$n]);
+$button = $app->add(['Button', 'My number is less than '.$middle, 'iconRight'=>'arrow down']);
+$button->link(['main','max'=>$middle,'min'=>$min]);
 
-    $button = $app->layout->add(['Button', 'Play again.','iconRight'=>'refresh']);
-    $button->set(['primary'=>true]);
-    $button->set(['size big'=>true]);
-    $button->link(['main','b'=>100,'m'=>0]);
+$button = $app->add(['Button', 'My number is exactly '.$middle.'!', 'iconRight'=>'empty star']);
+$button->link(['win','number'=>$middle]);
+
+$button = $app->add(['Button', 'My number is greater then '.$middle, 'iconRight'=>'arrow up']);
+$button->link(['main','max'=>$max,'min'=>$middle]);
+
+
+$back = $app->add(['ui'=>'divider']);
+
+$back = $app->add(['View', 'Back to the beginning'])
+    ->link(['index']);
